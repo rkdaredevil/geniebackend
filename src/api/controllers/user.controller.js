@@ -1,7 +1,11 @@
 const httpStatus = require('http-status');
-const { omit } = require('lodash');
+const {
+  omit
+} = require('lodash');
 const User = require('../models/user.model');
-const { handler: errorHandler } = require('../middlewares/error');
+const {
+  handler: errorHandler
+} = require('../middlewares/error');
 
 /**
  * Load user and append to req.
@@ -10,7 +14,9 @@ const { handler: errorHandler } = require('../middlewares/error');
 exports.load = async (req, res, next, id) => {
   try {
     const user = await User.get(id);
-    req.locals = { user };
+    req.locals = {
+      user
+    };
     return next();
   } catch (error) {
     return errorHandler(error, req, res);
@@ -50,12 +56,17 @@ exports.create = async (req, res, next) => {
  */
 exports.replace = async (req, res, next) => {
   try {
-    const { user } = req.locals;
+    const {
+      user
+    } = req.locals;
     const newUser = new User(req.body);
     const ommitRole = user.role !== 'admin' ? 'role' : '';
     const newUserObject = omit(newUser.toObject(), '_id', ommitRole);
 
-    await user.update(newUserObject, { override: true, upsert: true });
+    await user.update(newUserObject, {
+      override: true,
+      upsert: true
+    });
     const savedUser = await User.findById(user._id);
 
     res.json(savedUser.transform());
@@ -97,9 +108,60 @@ exports.list = async (req, res, next) => {
  * @public
  */
 exports.remove = (req, res, next) => {
-  const { user } = req.locals;
+  const {
+    user
+  } = req.locals;
 
   user.remove()
     .then(() => res.status(httpStatus.NO_CONTENT).end())
     .catch(e => next(e));
 };
+
+exports.findByUserID = (req, res) => {
+  var userID = req.params.userID;
+  console.log(userID);
+  User.find({
+    userID
+  }, function(err, person) {
+    if (err) return handleError(err);
+    res.status(200).send(person);
+  });
+}
+
+exports.logout = (req, res) => {
+  User.findOneAndRemove({
+    userID: req.body.userID
+  }, (err, authModelResult) => {
+    if (err) {
+      res.send("Internal error");
+    } else if (authModelResult == '' || authModelResult == null) {
+      res.send("Already Logged Out");
+    } else {
+      res.send("Logged out successfully");
+    }
+  })
+}
+
+exports.getAllUsers = (req, res) => {
+  User.find({})
+    .exec((err, result) => {
+      if (err) {
+        res.send("Internal error");
+      } else {
+        res.status(200).send(result);
+      }
+    });
+}
+
+exports.getSingleUser = (req, res) => {
+  User.findOne({
+      'userID': req.params.id
+    })
+    .exec((err, result) => {
+      if (err) {
+        res.send("Internal error");
+      } else {
+        res.send(result);
+      }
+    })
+}

@@ -15,7 +15,7 @@ const {
   jwtSecret,
   jwtExpirationInterval
 } = require('../../config/vars');
-const Schema=mongoose.Schema;
+const Schema = mongoose.Schema;
 
 /**
  * User Roles
@@ -27,8 +27,14 @@ const roles = ['user', 'admin', 'superadmin', 'subscriber'];
  * @private
  */
 var CounterSchema = Schema({
-    _id: {type: String, required: true},
-    seq: { type: Number, default: 0 }
+  _id: {
+    type: String,
+    required: true
+  },
+  seq: {
+    type: Number,
+    default: 0
+  }
 });
 var counter = mongoose.model('counter', CounterSchema);
 
@@ -76,7 +82,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
-  dob: {
+  birthday: {
     type: String,
     trim: true,
   },
@@ -131,7 +137,7 @@ const userSchema = new mongoose.Schema({
   body_type: {
     type: String
   },
-  about_me: {
+  about: {
     type: String
   },
   phone: {
@@ -151,7 +157,9 @@ const userSchema = new mongoose.Schema({
   fbID: {
     type: String
   },
-  userID: {type: String},
+  userID: {
+    type: String
+  },
   // userID: {
   //   type: Number,
   //   default: 0,
@@ -160,6 +168,12 @@ const userSchema = new mongoose.Schema({
   likes: [Schema.ObjectId],
   dislikes: [Schema.ObjectId],
   profiles_sent: [Schema.ObjectId],
+  address: {
+    type: String
+  },
+  education: {
+    type: String
+  },
   firebase_token: {
     type: String
   },
@@ -202,7 +216,7 @@ userSchema.pre('save', async function save(next) {
 userSchema.method({
   transform() {
     const transformed = {};
-    const fields = ['id', 'name', 'email', 'picture', 'role', 'createdAt'];
+    const fields = ['id', 'name', 'email', 'picture', 'role', 'createdAt', 'userID', 'birthday','gender'];
 
     fields.forEach((field) => {
       transformed[field] = this[field];
@@ -460,25 +474,27 @@ userSchema.statics = {
 };
 
 userSchema.pre('save', function(next) {
-    var doc = this;
-    counter.findByIdAndUpdate({_id: 'entityId'}, {$inc: { seq: 1} }, {new: true, upsert: true}).then(function(count) {
-        console.log("...count: "+JSON.stringify(count));
-        doc.userID = count.seq;
-        next();
+  var doc = this;
+  counter.findByIdAndUpdate({
+      _id: 'entityId'
+    }, {
+      $inc: {
+        seq: 1
+      }
+    }, {
+      new: true,
+      upsert: true
+    }).then(function(count) {
+      console.log("...count: " + JSON.stringify(count));
+      doc.userID = count.seq;
+      next();
     })
     .catch(function(error) {
-        console.error("counter error-> : "+error);
-        throw error;
+      console.error("counter error-> : " + error);
+      throw error;
     });
 });
 /**
  * @typedef User
  */
 module.exports = mongoose.model('User', userSchema);
-// autoIncrement.initialize(mongoose.connection);
-// userSchema.plugin(autoIncrement.plugin, {
-//   model: 'adminSchema',
-//   field: 'userID',
-//   startAt: 1,
-//   incrementBy: 1
-// });
