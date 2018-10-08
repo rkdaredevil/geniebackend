@@ -85,7 +85,7 @@ exports.update = (req, res, next) => {
   const user = Object.assign(req.locals.user, updatedUser);
 
   user.save()
-    .then(savedUser => res.json(savedUser.transform()))
+    .then(savedUser => res.json(savedUser))
     .catch(e => next(User.checkDuplicateEmail(e)));
 };
 
