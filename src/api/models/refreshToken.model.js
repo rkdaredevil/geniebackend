@@ -22,7 +22,9 @@ const refreshTokenSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
-  expires: { type: Date },
+  expires: {
+    type: Date
+  },
 });
 
 refreshTokenSchema.statics = {
@@ -39,7 +41,10 @@ refreshTokenSchema.statics = {
     const token = `${userId}.${crypto.randomBytes(40).toString('hex')}`;
     const expires = moment().add(30, 'days').toDate();
     const tokenObject = new RefreshToken({
-      token, userId, userEmail, expires,
+      token,
+      userId,
+      userEmail,
+      expires,
     });
     tokenObject.save();
     return tokenObject;

@@ -1,5 +1,5 @@
 /**
- * Created by deepak.m.shrma@gmail.com on 2/7/14.
+ * Created by rupeshkumarthakur11@gmail.com on 2/7/14.
  */
 var nodemailer = require("nodemailer");
 var async = require("async");

@@ -117,6 +117,11 @@ exports.remove = (req, res, next) => {
     .catch(e => next(e));
 };
 
+/**
+ * Find One user
+ * @public
+ */
+
 exports.findByUserID = (req, res) => {
   var userID = req.params.userID;
   console.log(userID);
@@ -128,19 +133,10 @@ exports.findByUserID = (req, res) => {
   });
 }
 
-exports.logout = (req, res) => {
-  User.findOneAndRemove({
-    userID: req.body.userID
-  }, (err, authModelResult) => {
-    if (err) {
-      res.send("Internal error");
-    } else if (authModelResult == '' || authModelResult == null) {
-      res.send("Already Logged Out");
-    } else {
-      res.send("Logged out successfully");
-    }
-  })
-}
+/**
+ * All users
+ * @public
+ */
 
 exports.getAllUsers = (req, res) => {
   User.find({})
@@ -153,6 +149,11 @@ exports.getAllUsers = (req, res) => {
     });
 }
 
+/**
+ * Single user
+ * @public
+ */
+
 exports.getSingleUser = (req, res) => {
   User.findOne({
       'userID': req.params.id
@@ -163,5 +164,5 @@ exports.getSingleUser = (req, res) => {
       } else {
         res.send(result);
       }
-    })
+    });
 }

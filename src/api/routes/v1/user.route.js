@@ -101,15 +101,12 @@ router
 
   .get(authorize(), controller.findByUserID);
 
-router
-  .route('/logout')
 
-  .post(controller.logout);
 
 router
   .route('/getAllUserData')
 
-  .get(authorize(),controller.getAllUsers);
+  .get(authorize(), controller.getAllUsers);
 
 router
   .route('/getSingleUser/:id')

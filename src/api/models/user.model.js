@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const httpStatus = require('http-status');
-// const autoIncrement = require('mongoose-auto-increment');
 const {
   omitBy,
   isNil
@@ -88,7 +87,7 @@ const userSchema = new mongoose.Schema({
   },
   gender: {
     type: String,
-    enum: ['Male', 'Female','Other'],
+    enum: ['Male', 'Female', 'Other'],
   },
   mobile: {
     type: String,
@@ -160,11 +159,6 @@ const userSchema = new mongoose.Schema({
   userID: {
     type: String
   },
-  // userID: {
-  //   type: Number,
-  //   default: 0,
-  //   unique: true
-  // },
   likes: [Schema.ObjectId],
   dislikes: [Schema.ObjectId],
   profiles_sent: [Schema.ObjectId],
@@ -216,7 +210,7 @@ userSchema.pre('save', async function save(next) {
 userSchema.method({
   transform() {
     const transformed = {};
-    const fields = ['id', 'name', 'email', 'picture', 'role', 'createdAt', 'userID', 'birthday','gender'];
+    const fields = ['id', 'name', 'email', 'picture', 'role', 'createdAt', 'userID', 'birthday', 'gender'];
 
     fields.forEach((field) => {
       transformed[field] = this[field];
@@ -494,6 +488,8 @@ userSchema.pre('save', function(next) {
       throw error;
     });
 });
+
+
 /**
  * @typedef User
  */
