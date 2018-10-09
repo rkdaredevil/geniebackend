@@ -20,7 +20,7 @@ const {
 function generateTokenResponse(user, accessToken) {
   const tokenType = 'Bearer';
   const refreshToken = RefreshToken.generate(user).token;
-  const expiresIn = moment().add(jwtExpirationInterval, 'minutes');
+  const expiresIn = moment().add(jwtExpirationInterval, 'days');
   return {
     tokenType,
     accessToken,
@@ -87,6 +87,13 @@ exports.oAuth = async (req, res, next) => {
     const accessToken = user.token();
     const token = generateTokenResponse(user, accessToken);
     const userTransformed = user.transform();
+    if (user.email !== '') {
+      return res.send({
+        message: 'user is already registered',
+        token,
+        user: user
+      })
+    }
     return res.json({
       token,
       user: userTransformed

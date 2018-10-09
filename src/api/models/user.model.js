@@ -89,10 +89,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['Male', 'Female', 'Other'],
   },
-  mobile: {
-    type: String,
-    trim: true,
-  },
+
   location: {
     type: String,
     trim: true,
@@ -136,11 +133,12 @@ const userSchema = new mongoose.Schema({
   body_type: {
     type: String
   },
-  about: {
+  about_me: {
     type: String
   },
   phone: {
     type: Number,
+    trim: true,
   },
   lives_in: {
     type: String
@@ -477,7 +475,7 @@ userSchema.pre('save', function(next) {
       }
     }, {
       new: true,
-      upsert: true
+      upsert: false
     }).then(function(count) {
       console.log("...count: " + JSON.stringify(count));
       doc.userID = count.seq;
