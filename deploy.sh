@@ -10,3 +10,6 @@ docker rmi danielfsousa/express-rest-es2017-boilerplate:current || true
 docker tag danielfsousa/express-rest-es2017-boilerplate:latest danielfsousa/express-rest-es2017-boilerplate:current
 docker run -d --restart always --name api-boilerplate -p 3000:3000 danielfsousa/express-rest-es2017-boilerplate:current
 EOF
+
+
+
