@@ -113,6 +113,9 @@ router
 
   .get(controller.getSingleUser);
 
+router
+  .route('/matchingUsersByIDs')
+  .post(authorize(), controller.getAllMatchingUsers);
 
 
 router

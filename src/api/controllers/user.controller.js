@@ -155,6 +155,8 @@ exports.getAllUsers = (req, res) => {
  */
 
 exports.getSingleUser = (req, res) => {
+  console.log('hello');
+  return false;
   User.findOne({
       'userID': req.params.id
     })
@@ -165,4 +167,33 @@ exports.getSingleUser = (req, res) => {
         res.send(result);
       }
     });
+}
+
+exports.getAllMatchingUsers = (req, res) => {
+
+
+  let listOfUsers = req.body.users.map((value) => {
+    return value;
+  })
+  console.log(listOfUsers);
+  User.find({
+    "userID": {
+      $in: listOfUsers
+    }
+  }).limit(10).
+  sort({
+    occupation: -1
+  }).exec((err, data) => {
+    if (err) {
+      new new Error({
+        message: 'Error Occured'
+      })
+    } else if (data.length === 0) {
+      return res.status(200).send({
+        message: 'Data Unavailable'
+      });
+    } else {
+      return res.status(200).send(data);
+    }
+  })
 }
