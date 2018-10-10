@@ -189,9 +189,10 @@ exports.getAllMatchingUsers = (req, res) => {
         message: 'Error Occured'
       })
     } else if (data.length === 0) {
-      return res.status(200).send({
-        message: 'Data Unavailable'
-      });
+      return res.status(200).send([{
+        message: 'Data Unavailable',
+        count: data.length
+      }]);
     } else {
       return res.status(200).send(data);
     }
