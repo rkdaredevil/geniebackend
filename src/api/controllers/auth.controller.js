@@ -87,16 +87,9 @@ exports.oAuth = async (req, res, next) => {
     const accessToken = user.token();
     const token = generateTokenResponse(user, accessToken);
     const userTransformed = user.transform();
-    if (user.email !== '') {
-      return res.send({
-        message: 'user is already registered',
-        token,
-        user: user
-      })
-    }
     return res.json({
       token,
-      user: userTransformed
+      user: user
     });
   } catch (error) {
     return next(error);
