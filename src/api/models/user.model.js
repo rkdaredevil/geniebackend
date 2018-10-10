@@ -475,7 +475,7 @@ userSchema.pre('save', function(next) {
       }
     }, {
       new: true,
-      upsert: false
+      upsert: true
     }).then(function(count) {
       console.log("...count: " + JSON.stringify(count));
       doc.userID = count.seq;
