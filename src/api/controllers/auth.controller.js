@@ -44,7 +44,7 @@ exports.register = async (req, res, next) => {
         to: userTransformed.email
       });
     }
-    return res.json({
+    return res.status(200).json({
       token,
       user: userTransformed
     });
@@ -65,7 +65,7 @@ exports.login = async (req, res, next) => {
     } = await User.findAndGenerateToken(req.body);
     const token = generateTokenResponse(user, accessToken);
     const userTransformed = user.transform();
-    return res.json({
+    return res.status(200).json({
       token,
       user: userTransformed
     });
@@ -87,7 +87,7 @@ exports.oAuth = async (req, res, next) => {
     const accessToken = user.token();
     const token = generateTokenResponse(user, accessToken);
     const userTransformed = user.transform();
-    return res.json({
+    return res.status(200).json({
       token,
       user: user
     });
@@ -118,7 +118,7 @@ exports.refresh = async (req, res, next) => {
       refreshObject
     });
     const response = generateTokenResponse(user, accessToken);
-    return res.json(response);
+    return res.status(200).json(response);
   } catch (error) {
     return next(error);
   }

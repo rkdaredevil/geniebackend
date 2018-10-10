@@ -7,7 +7,7 @@ exports.generateOtp = async (req, res, next) => {
     const { email } = req.body;
     const message = await User.FindOneAndUpdate({ email }, { otp });
 
-    return res.send({ otp });
+    return res.status(200).send({ otp });
   } catch (err) {
     return next(err);
   }

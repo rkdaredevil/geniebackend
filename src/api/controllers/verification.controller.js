@@ -38,7 +38,7 @@ exports.verifyUserEmail = async (req, res, next) => {
 
   try {
     const message = await User.verifyEmail(uuid);
-    return res.send(message);
+    return res.status(200).send(message);
   } catch (err) {
     return next(err);
   }
@@ -48,7 +48,7 @@ exports.verifyMobileOtp = async (req, res, next) => {
   const { email, otp } = req.body;
   try {
     const message = await User.verifyMobileOtp(email, otp);
-    return res.send(message);
+    return res.status(200).send(message);
   } catch(err) {
     return next(err);
   }

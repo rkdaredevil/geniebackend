@@ -27,13 +27,13 @@ exports.load = async (req, res, next, id) => {
  * Get user
  * @public
  */
-exports.get = (req, res) => res.json(req.locals.user.transform());
+exports.get = (req, res) => res.status(200).json(req.locals.user.transform());
 
 /**
  * Get logged in user info
  * @public
  */
-exports.loggedIn = (req, res) => res.json(req.user.transform());
+exports.loggedIn = (req, res) => res.status(200).json(req.user.transform());
 
 /**
  * Create new user
@@ -69,7 +69,7 @@ exports.replace = async (req, res, next) => {
     });
     const savedUser = await User.findById(user._id);
 
-    res.json(savedUser.transform());
+    res.status(200).json(savedUser.transform());
   } catch (error) {
     next(User.checkDuplicateEmail(error));
   }
@@ -85,7 +85,7 @@ exports.update = (req, res, next) => {
   const user = Object.assign(req.locals.user, updatedUser);
 
   user.save()
-    .then(savedUser => res.json(savedUser))
+    .then(savedUser => res.status(200).json(savedUser))
     .catch(e => next(User.checkDuplicateEmail(e)));
 };
 
@@ -97,7 +97,7 @@ exports.list = async (req, res, next) => {
   try {
     const users = await User.list(req.query);
     const transformedUsers = users.map(user => user.transform());
-    res.json(transformedUsers);
+    res.status(200).json(transformedUsers);
   } catch (error) {
     next(error);
   }
@@ -142,7 +142,7 @@ exports.getAllUsers = (req, res) => {
   User.find({})
     .exec((err, result) => {
       if (err) {
-        res.send("Internal error");
+        res.status(500).send("Internal error");
       } else {
         res.status(200).send(result);
       }
@@ -162,9 +162,9 @@ exports.getSingleUser = (req, res) => {
     })
     .exec((err, result) => {
       if (err) {
-        res.send("Internal error");
+        res.status(500).send("Internal error");
       } else {
-        res.send(result);
+        res.status(200).send(result);
       }
     });
 }
