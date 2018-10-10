@@ -85,6 +85,7 @@
     "mjml": "^4.1.1",
     "moment-timezone": "^0.5.13",
     "mongoose": "^4.9.7",
+    "mongoose-auto-increment": "^5.0.1",
     "morgan": "^1.8.1",
     "nodemailer": "^4.6.7",
     "otp-generator": "^1.1.0",

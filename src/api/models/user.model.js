@@ -15,6 +15,7 @@ const {
   jwtExpirationInterval
 } = require('../../config/vars');
 const Schema = mongoose.Schema;
+const autoIncrement = require('mongoose-auto-increment');
 
 /**
  * User Roles
@@ -25,17 +26,7 @@ const roles = ['user', 'admin', 'superadmin', 'subscriber'];
  * User Schema
  * @private
  */
-var CounterSchema = Schema({
-  _id: {
-    type: String,
-    required: true
-  },
-  seq: {
-    type: Number,
-    default: 0
-  }
-});
-var counter = mongoose.model('counter', CounterSchema);
+
 
 
 const userSchema = new mongoose.Schema({
@@ -154,9 +145,6 @@ const userSchema = new mongoose.Schema({
   fbID: {
     type: String
   },
-  userID: {
-    type: String
-  },
   likes: [Schema.ObjectId],
   dislikes: [Schema.ObjectId],
   profiles_sent: [Schema.ObjectId],
@@ -173,6 +161,11 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  userID: {
+    type: Number,
+    default: 0,
+    unique: true
+  },
   mobileVerified: {
     type: Boolean,
     default: false,
@@ -187,6 +180,13 @@ const userSchema = new mongoose.Schema({
  * - validations
  * - virtuals
  */
+autoIncrement.initialize(mongoose.connection);
+userSchema.plugin(autoIncrement.plugin, {
+  model: 'User',
+  field: 'userID',
+  startAt: 1,
+  incrementBy: 1
+});
 userSchema.pre('save', async function save(next) {
   try {
     if (!this.isModified('password')) return next();
@@ -465,27 +465,6 @@ userSchema.statics = {
   },
 };
 
-userSchema.pre('save', function(next) {
-  var doc = this;
-  counter.findByIdAndUpdate({
-      _id: 'entityId'
-    }, {
-      $inc: {
-        seq: 1
-      }
-    }, {
-      new: true,
-      upsert: true
-    }).then(function(count) {
-      console.log("...count: " + JSON.stringify(count));
-      doc.userID = count.seq;
-      next();
-    })
-    .catch(function(error) {
-      console.error("counter error-> : " + error);
-      throw error;
-    });
-});
 
 
 /**
