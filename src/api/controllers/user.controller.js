@@ -6,7 +6,7 @@ const User = require('../models/user.model');
 const {
   handler: errorHandler
 } = require('../middlewares/error');
-
+const shuffle = require('shuffle-array');
 /**
  * Load user and append to req.
  * @public
@@ -123,7 +123,7 @@ exports.remove = (req, res, next) => {
  */
 
 exports.findByUserID = (req, res) => {
-  var userID = req.params.userID;
+  let userID = req.params.userID;
   console.log(userID);
   User.find({
     userID
@@ -197,4 +197,120 @@ exports.getAllMatchingUsers = (req, res) => {
       return res.status(200).send(data);
     }
   })
+}
+
+exports.getWishByID = (req, res, next) => {
+  let user = req.user;
+  let interestedIn = req.params.id;
+  let oppositeGenderUsers = new Array();
+  User.findByGender(interestedIn, user.likes.concat(user.dislikes)).then(function(users) {
+    if (users.length >= 10) {
+      let arrayUsers = new Array();
+      arrayUsers = shuffle.pick(users, {
+        'picks': 10
+      });
+      user.profiles_sent = arrayUsers;
+      user.likes.concat(user.dislikes).map(id => {
+        user.profiles_sent.push(id);
+      });
+      user.save().then(function(user) {
+        res.status(200).send({
+          users: arrayUsers
+        });
+      }).catch(function(e) {
+        next(e);
+      });
+    } else if (users.length >= 2) {
+      if (users.length % 2 != 0) {
+        users.pop();
+      }
+
+      user.profiles_sent = users;
+      user.likes.concat(user.dislikes).map(id => {
+        user.profiles_sent.push(id);
+      });
+      user.save().then(function(user) {
+        res.status(200).send({
+          users: users
+        });
+      }).catch(function(e) {
+        next(e);
+      });
+    } else {
+
+      res.status(202).send({
+        message: "No users left"
+      });
+    }
+  }).catch(function(err) {
+    next(err);
+  });
+}
+
+
+exports.createWishByID = (req, res, next) => {
+  req.user.likes.push(req.body.liked);
+  req.user.dislikes.push(req.body.disliked);
+  var interestedIn = req.params.id;
+  req.user.save().then(function(user) {
+    User.findByGender(interestedIn, user.profiles_sent).then(function(users) {
+      if (users.length >= 2) {
+        var arrayUsers = new Array();
+        arrayUsers = shuffle.pick(users, {
+          'picks': 2
+        });
+        user.profiles_sent.push(arrayUsers[0]);
+        user.profiles_sent.push(arrayUsers[1]);
+        user.save().then(function(user) {
+
+          res.status(200).send({
+            users: arrayUsers
+          });
+        }).catch(function(e) {
+          next(e);
+        });
+      } else {
+
+        res.status(202).send({
+          message: "No users left"
+        });
+      }
+    }).catch(function(err) {
+      next(err);
+    });
+  });
+}
+
+
+exports.getMyWish = (req, res) => {
+  var user = req.user;
+  user.status = 'online';
+  if (user.length === 0) {
+    return res.status(200).send([{
+      message: 'Unavailable to get WishList',
+      count: user.length
+    }]);
+  }
+  res.status(200).send({
+    user: user
+  });
+}
+
+exports.postMyWish = (req, res) => {
+  if (req.body.liked == true) {
+    req.user.likes.push(req.user._id);
+  } else {
+    req.user.dislikes.push(req.user._id);
+  }
+  req.user.save().then(function(user) {
+    if (user.length === 0) {
+      return res.status(200).send([{
+        message: 'Wish is Unavailable',
+        count: user.length
+      }]);
+    }
+    res.status(200).send({
+      user: user
+    });
+  });
 }

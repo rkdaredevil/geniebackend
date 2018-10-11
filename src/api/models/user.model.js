@@ -231,6 +231,26 @@ userSchema.method({
   },
 });
 
+userSchema.statics.findByCredentials = function(phone, password) {
+  var User = this;
+  return User.findOne({
+    phone
+  }).select('+password').then(function(user) {
+    if (!user) {
+      return Promise.reject();
+    }
+    return new Promise(function(resolve, reject) {
+      bcrypt.compare(password, user.password, function(err, res) {
+        if (res) {
+          resolve(user);
+        } else {
+          reject();
+        }
+      });
+    });
+  });
+};
+
 /**
  * Statics
  */
@@ -465,6 +485,21 @@ userSchema.statics = {
   },
 };
 
+userSchema.statics.findByGender = function(gender, liked_disliked) {
+  var User = this;
+  return User.find({
+    gender,
+    _id: {
+      $nin: liked_disliked
+    }
+  }).then(function(users) {
+    if (!users) {
+      return Promise.reject();
+    } else {
+      return Promise.resolve(users);
+    }
+  });
+};
 
 
 /**

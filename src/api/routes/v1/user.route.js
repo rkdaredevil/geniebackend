@@ -117,6 +117,22 @@ router
   .route('/matchingUsersByIDs')
   .post(authorize(), controller.getAllMatchingUsers);
 
+router
+  .route('/wish/:id')
+  .get(authorize(), controller.getWishByID);
+
+router
+  .route('/wish/:id')
+  .post(authorize(), controller.createWishByID);
+
+
+router
+  .route('/me/wish')
+  .get(authorize(), controller.getMyWish);
+
+router
+  .route('/me/wish')
+  .post(authorize(), controller.postMyWish);
 
 router
   .route('/:userId')
