@@ -53,6 +53,41 @@ exports.register = async (req, res, next) => {
   }
 };
 
+
+exports.phoneRegister = (req, res, next) => {
+  req.body.display_name_as = req.body.display_name;
+  if (req.body.display_name === 'First Name') {
+    req.body.display_name = req.body.name.split(' ')[0];
+  } else if (req.body.display_name === 'Full Name') {
+    req.body.display_name = req.body.name;
+  } else {
+    req.body.display_name = initials(req.body.name);
+  }
+  if (req.body.authType === 'phone') {
+    User.findOne({
+      phone: req.body.phone
+    }, async (user) => {
+
+      if (!user) {
+        try {
+          const user = await (new User(req.body)).save();
+          const token = generateTokenResponse(user, user.token());
+          res.status(httpStatus.CREATED);
+          return res.status(200).json({
+            message: 'Successfully registered here',
+            token,
+            user: user
+          });
+        } catch (e) {
+          return next(User.checkDuplicateEmail(e));
+        }
+
+
+      }
+
+    })
+  }
+}
 /**
  * Returns jwt token if valid username and password is provided
  * @public
@@ -74,6 +109,50 @@ exports.login = async (req, res, next) => {
   }
 };
 
+exports.phoneLogin = (req, res, next) => {
+  let authType, phone = req.body;
+  if (req.body.authType !== 'phone') {
+    return res.status(422).json({
+      errors: {
+        authType: 'is required',
+      },
+    });
+  }
+
+  if (!req.body.phone) {
+    return res.status(422).json({
+      errors: {
+        phone: 'is required',
+      },
+    });
+  }
+  User.findOne({
+    phone: req.body.phone
+  }, null, {
+    safe: true
+  }, (err, user) => {
+    if (user != null && user != undefined && user.length < 1) {
+
+      res.status(422).send({
+        message: 'something went wrong'
+      })
+    } else if (user === null || user === undefined) {
+      console.log('help');
+      res.status(202).send({
+        message: 'No Data Available'
+      })
+    } else {
+
+      const token = generateTokenResponse(user, user.token());
+      res.status(200).send({
+        token,
+        user: user
+      })
+    }
+  })
+
+
+}
 /**
  * login with an existing user or creates a new one if valid accessToken token
  * Returns jwt token

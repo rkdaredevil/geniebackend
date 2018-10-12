@@ -7,6 +7,8 @@ const {
 	register,
 	oAuth,
 	refresh,
+	loginPhone,
+	registerPhone,
 } = require('../../validations/auth.validation');
 
 const router = express.Router();
@@ -42,6 +44,10 @@ router.route('/register')
 	.post(validate(register), controller.register);
 
 
+router.route('/phoneRegister')
+	.post(validate(registerPhone),controller.phoneRegister);
+
+
 /**
  * @api {post} v1/auth/login Login
  * @apiDescription Get an accessToken
@@ -72,6 +78,9 @@ router.route('/register')
 router.route('/login')
 	.post(validate(login), controller.login);
 
+
+router.route('/phoneLogin')
+	.post(validate(loginPhone), controller.phoneLogin);
 
 /**
  * @api {post} v1/auth/refresh-token Refresh Token
