@@ -5,7 +5,10 @@ var client = require('../../config/client');
 var BulkMailer = require("../services/bulkEmail");
 const User = require('../models/user.model');
 
-var bulkMailer = new BulkMailer({ transport: credentials.email, verbose: true });
+var bulkMailer = new BulkMailer({
+  transport: credentials.email,
+  verbose: true
+});
 
 var __mailerOptions = (hash, options) => {
   var companyLogo = client.logoUrl;
@@ -34,7 +37,9 @@ exports.sendVerificationEmail = (hash, options) => {
 }
 
 exports.verifyUserEmail = async (req, res, next) => {
-  const { uuid } = req.params;
+  const {
+    uuid
+  } = req.params;
 
   try {
     const message = await User.verifyEmail(uuid);
@@ -45,11 +50,14 @@ exports.verifyUserEmail = async (req, res, next) => {
 }
 
 exports.verifyMobileOtp = async (req, res, next) => {
-  const { email, otp } = req.body;
+  const {
+    email,
+    otp
+  } = req.body;
   try {
     const message = await User.verifyMobileOtp(email, otp);
     return res.status(200).send(message);
-  } catch(err) {
+  } catch (err) {
     return next(err);
   }
 }

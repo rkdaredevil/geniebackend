@@ -45,7 +45,7 @@ router.route('/register')
 
 
 router.route('/phoneRegister')
-	.post(validate(registerPhone),controller.phoneRegister);
+	.post(validate(registerPhone), controller.phoneRegister);
 
 
 /**

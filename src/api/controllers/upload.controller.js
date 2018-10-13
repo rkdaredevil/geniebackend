@@ -1,72 +1,51 @@
-const AWS = require('aws-sdk')
-const async = require('async')
-const bucketName = "rupesh-kt"
-const path = require('path')
-const fs = require('fs')
-let pathParams, image, imageName;
+const AWS = require('aws-sdk');
+const User = require('../models/user.model');
+exports.uploadFiles = function(req, res, next) {
 
-/** Load Config File */
-AWS.config.loadFromPath('src/config/config.json')
+	let file = req.files;
+	let s3bucket = new AWS.S3({
+		accessKeyId: '',
+		secretAccessKey: '',
+		region: 'us-west-2',
+		Bucket: 'genieimagebucket'
+	});
+	s3bucket.createBucket(function() {
+		let Bucket_Path = 'genieimagebucket';
 
-/** After config file load, create object for s3*/
-const s3 = new AWS.S3({
-	region: 'us-west-2'
-})
-const createMainBucket = (callback) => {
-	// Create the parameters for calling createBucket
-	const bucketParams = {
-		Bucket: bucketName
-	};
-	s3.headBucket(bucketParams, function(err, data) {
-		if (err) {
-			console.log("ErrorHeadBucket", err)
-			s3.createBucket(bucketParams, function(err, data) {
+		var ResponseData = [];
+
+		file.map((item) => {
+			var params = {
+				Bucket: Bucket_Path,
+				Key: item.originalname,
+				Body: item.buffer,
+				ACL: 'public-read'
+			};
+			s3bucket.upload(params, function(err, data) {
 				if (err) {
-					console.log("Error", err)
-					callback(err, null)
+					res.json({
+						"error": true,
+						"Message": err
+					});
 				} else {
-					callback(null, data)
+					ResponseData.push(data);
+
+					User.findById({
+						'_id': req.body.id
+					}, function(err, user) {
+						for (var item of ResponseData) {
+							user.images.push(item.Location);
+							user.save()
+								.then(savedUser => res.status(200).json(savedUser))
+								.catch(e => next(User.checkDuplicateEmail(e)));
+
+						}
+
+					});
+
+
 				}
 			});
-		} else {
-			callback(null, data)
-		}
-	})
-}
-
-const createItemObject = (callback) => {
-	const params = {
-		Bucket: bucketName,
-		Key: `${imageName}`,
-		ACL: 'public-read',
-		Body: image
-	};
-	s3.putObject(params, function(err, data) {
-		if (err) {
-			console.log("Error uploading image: ", err);
-			callback(err, null)
-		} else {
-			console.log("Successfully uploaded image on S3", data);
-			callback(null, data)
-		}
-	})
-}
-exports.upload = (req, res, next) => {
-	var tmp_path = req.files.file.path;
-	// console.log("item", req.files.file)
-	var tmp_path = req.files.file.path;
-	image = fs.createReadStream(tmp_path);
-	imageName = req.files.file.name;
-	async.series([
-		createMainBucket,
-		createItemObject
-	], (err, result) => {
-		console.log(result);
-		if (err) return res.status(500).send(err)
-
-		else return res.status(200).json({
-			res: result,
-			message: "Successfully uploaded"
-		})
-	})
+		});
+	});
 }

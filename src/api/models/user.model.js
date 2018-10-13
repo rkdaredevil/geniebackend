@@ -137,7 +137,9 @@ const userSchema = new mongoose.Schema({
   car_model: {
     type: String
   },
-  images: [String],
+  images: {
+    type: [String],
+  },
   profilePhoto: String,
   authType: {
     type: String
@@ -172,6 +174,9 @@ const userSchema = new mongoose.Schema({
   },
 }, {
   timestamps: true,
+}, {
+  usePushEach: true,
+
 });
 
 /**
