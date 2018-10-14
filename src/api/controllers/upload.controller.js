@@ -30,18 +30,26 @@ exports.uploadFiles = function(req, res, next) {
 				} else {
 					ResponseData.push(data);
 
-					User.findById({
-						'_id': req.body.id
-					}, function(err, user) {
+					User.findOne({
+						$or: [{
+							_id: req.body.id
+						}, {
+							phone: req.body.phone
+						}]
+
+					}).exec(function(err, user) {
 						for (var item of ResponseData) {
 							user.images.push(item.Location);
 							user.save()
-								.then(savedUser => res.status(200).json(savedUser))
+								.then(savedUser => res.status(200).json({
+									images: savedUser.images
+								}))
 								.catch(e => next(User.checkDuplicateEmail(e)));
 
 						}
 
 					});
+
 
 
 				}

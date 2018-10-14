@@ -7,6 +7,7 @@ const {
   handler: errorHandler
 } = require('../middlewares/error');
 const shuffle = require('shuffle-array');
+var mongoose = require('mongoose');
 /**
  * Load user and append to req.
  * @public
@@ -27,6 +28,25 @@ exports.load = async (req, res, next, id) => {
  * Get user
  * @public
  */
+
+exports.getOne = async (req, res) => {
+  try {
+    const {
+      id
+    } = req.params;
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({
+        err: 'could not find user'
+      });
+    }
+    return res.json(user);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send(err);
+  }
+}
+
 exports.get = (req, res) => res.status(200).json(req.locals.user.transform());
 
 /**

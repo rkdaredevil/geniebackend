@@ -135,7 +135,7 @@ router
   .post(authorize(), controller.postMyWish);
 
 router
-  .route('/:userId')
+  .route('/:id')
   /**
    * @api {get} v1/users/:id Get User
    * @apiDescription Get user information
@@ -156,7 +156,7 @@ router
    * @apiError (Forbidden 403)    Forbidden    Only user with same id or admins can access the data
    * @apiError (Not Found 404)    NotFound     User does not exist
    */
-  .get(authorize(LOGGED_USER), controller.get)
+  .get(authorize(), controller.getOne)
   /**
    * @api {put} v1/users/:id Replace User
    * @apiDescription Replace the whole user document with a new one
