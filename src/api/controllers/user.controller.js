@@ -334,3 +334,8 @@ exports.postMyWish = (req, res) => {
     });
   });
 }
+
+
+// var initials = Array.prototype.map.call(user.name.split(" "), function(x) {
+//   return x.substring(0, 1).toUpperCase();
+// }).join('');

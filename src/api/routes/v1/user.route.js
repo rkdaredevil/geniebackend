@@ -136,6 +136,10 @@ router
 
 router
   .route('/:id')
+  .get(authorize(), controller.getOne);  
+
+router
+  .route('/:userId')
   /**
    * @api {get} v1/users/:id Get User
    * @apiDescription Get user information
@@ -156,7 +160,7 @@ router
    * @apiError (Forbidden 403)    Forbidden    Only user with same id or admins can access the data
    * @apiError (Not Found 404)    NotFound     User does not exist
    */
-  .get(authorize(), controller.getOne)
+  .get(authorize(LOGGED_USER), controller.get)
   /**
    * @api {put} v1/users/:id Replace User
    * @apiDescription Replace the whole user document with a new one

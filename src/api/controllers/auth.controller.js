@@ -166,6 +166,11 @@ exports.oAuth = async (req, res, next) => {
     const accessToken = user.token();
     const token = generateTokenResponse(user, accessToken);
     const userTransformed = user.transform();
+    if (!user.email) {
+      res.status(422).send({
+        message: 'email is required to create profile, try other method'
+      })
+    }
     return res.status(200).json({
       token,
       user: user
