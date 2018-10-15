@@ -335,6 +335,53 @@ exports.postMyWish = (req, res) => {
   });
 }
 
+exports.findGender = (req, res, next) => {
+  var gender = req.body.gender;
+  console.log(gender);
+  if (req.body.gender === 'Male') {
+    User.find({
+      gender: {
+        $all: ['Female']
+      }
+    }, function(err, user) {
+      if (err)
+        return new Error(err);
+      res.status(200).send({
+        'message': 'here is list of females',
+        user
+      })
+    })
+  } else if (req.body.gender === 'Female') {
+    User.find({
+      gender: {
+        $all: ['Male']
+      }
+    }, function(err, user) {
+      if (err)
+        return new Error(err);
+      res.status(200).send({
+        'message': 'here is list of males',
+        user
+      })
+    })
+  } else if (req.body.gender === 'Others') {
+    User.find({}, function(err, user) {
+      if (err)
+        return new Error(err);
+      res.status(200).send({
+        'message': 'here is list of others',
+        user
+      })
+    })
+  } else {
+    res.send({
+      message: "User does not exits",
+      response: `no info found for ${gender}.`
+    });
+  }
+
+
+}
 
 // var initials = Array.prototype.map.call(user.name.split(" "), function(x) {
 //   return x.substring(0, 1).toUpperCase();

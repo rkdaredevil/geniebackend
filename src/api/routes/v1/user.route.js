@@ -122,6 +122,10 @@ router
   .get(authorize(), controller.getWishByID);
 
 router
+  .route('/wish/myWish')
+  .post(controller.findGender);
+
+router
   .route('/wish/:id')
   .post(authorize(), controller.createWishByID);
 
@@ -136,7 +140,7 @@ router
 
 router
   .route('/:id')
-  .get(authorize(), controller.getOne);  
+  .get(authorize(), controller.getOne);
 
 router
   .route('/:userId')
