@@ -66,7 +66,6 @@ exports.uploadFiles = function(req, res, next) {
 						user.images.push(item.Location);
 						user.save()
 							.then(savedUser => res.status(200).json({
-								token,
 								user: savedUser
 							}))
 							.catch(e => res.status(400).send(e));
