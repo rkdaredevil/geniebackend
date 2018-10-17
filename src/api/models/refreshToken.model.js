@@ -19,8 +19,7 @@ const refreshTokenSchema = new mongoose.Schema({
   },
   userEmail: {
     type: 'String',
-    ref: 'User',
-    required: true,
+    ref: 'User'
   },
   expires: {
     type: Date

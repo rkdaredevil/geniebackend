@@ -63,9 +63,11 @@ exports.uploadFiles = function(req, res, next) {
 					var body = _.pick(req.body, ['name', 'phone', 'password', 'gender']);
 					var user = new User(req.body);
 					for (var item of ResponseData) {
+						const token = generateTokenResponse(user, user.token());
 						user.images.push(item.Location);
 						user.save()
 							.then(savedUser => res.status(200).json({
+								token,
 								user: savedUser
 							}))
 							.catch(e => res.status(400).send(e));
