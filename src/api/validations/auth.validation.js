@@ -22,6 +22,7 @@ module.exports = {
   oAuth: {
     body: {
       access_token: Joi.string().required(),
+      fbID:Joi.string().allow(''),
     },
   },
 

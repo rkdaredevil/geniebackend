@@ -163,6 +163,9 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  message:{
+    type: String
+  },
   userID: {
     type: Number,
     default: 0,
@@ -394,6 +397,7 @@ userSchema.statics = {
     email,
     name,
     picture,
+    message,
   }) {
     const user = await this.findOne({
       $or: [{
@@ -406,6 +410,7 @@ userSchema.statics = {
       user.services[service] = id;
       if (!user.name) user.name = name;
       if (!user.picture) user.picture = picture;
+      if(!user.message) user.message='User already registered';
       return user.save();
     }
     const password = uuidv4();
@@ -413,6 +418,7 @@ userSchema.statics = {
       services: {
         [service]: id
       },
+      message,
       email,
       password,
       name,

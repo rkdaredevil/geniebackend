@@ -137,7 +137,6 @@ exports.phoneLogin = (req, res, next) => {
         message: 'something went wrong'
       })
     } else if (user === null || user === undefined) {
-      console.log('help');
       res.status(202).send({
         message: 'No Data Available'
       })
@@ -166,7 +165,7 @@ exports.oAuth = async (req, res, next) => {
     const accessToken = user.token();
     const token = generateTokenResponse(user, accessToken);
     const userTransformed = user.transform();
-    console.log(user);
+
     if (!user) {
       return res.status(422).send({
         message: 'email is required to create profile, try other method'

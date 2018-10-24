@@ -10,7 +10,7 @@ const routes = require('../api/routes/v1');
 const { logs } = require('./vars');
 const strategies = require('./passport');
 const error = require('../api/middlewares/error');
-
+const logger = require('../api/utils/logger');
 /**
 * Express instance
 * @public
@@ -18,7 +18,7 @@ const error = require('../api/middlewares/error');
 const app = express();
 
 // request logging. dev: console | production: file
-app.use(morgan(logs));
+app.use(morgan('combined', {stream: logger.stream}));
 
 // parse body params and attache them to req.body
 app.use(bodyParser.json());

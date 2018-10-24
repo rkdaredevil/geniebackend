@@ -144,7 +144,7 @@ exports.remove = (req, res, next) => {
 
 exports.findByUserID = (req, res) => {
   let userID = req.params.userID;
-  console.log(userID);
+
   User.find({
     userID
   }, function(err, person) {
@@ -175,8 +175,6 @@ exports.getAllUsers = (req, res) => {
  */
 
 exports.getSingleUser = (req, res) => {
-  console.log('hello');
-  return false;
   User.findOne({
       'userID': req.params.id
     })
@@ -195,7 +193,7 @@ exports.getAllMatchingUsers = (req, res) => {
   let listOfUsers = req.body.users.map((value) => {
     return value;
   })
-  console.log(listOfUsers);
+
   User.find({
     "userID": {
       $in: listOfUsers
@@ -337,7 +335,7 @@ exports.postMyWish = (req, res) => {
 
 exports.findGender = (req, res, next) => {
   var gender = req.body.gender;
-  console.log(gender);
+
   if (req.body.gender === 'Male') {
     User.find({
       gender: {
