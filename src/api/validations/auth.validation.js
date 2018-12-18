@@ -37,7 +37,7 @@ module.exports = {
   registerPhone: {
     body: {
       name: Joi.string().min(3).max(30).required(),
-      phone: Joi.number().integer().min(100000000000).max(999999999999),
+      phone: Joi.number().integer().required(),
       gender: Joi.string().valid(['Male', 'Female', 'Other']).required(),
       authType: Joi.string().valid(['facebook', 'phone']).required(),
       profileImage: Joi.string().allow(''),
@@ -62,7 +62,7 @@ module.exports = {
 
   loginPhone: {
     body: {
-      phone: Joi.number().integer().min(100000000000).max(999999999999),
+      phone: Joi.number().integer().required(),
       authType: Joi.string().valid(['facebook', 'phone']).required(),
       fbID: Joi.string().allow(''),
       hash: Joi.string().allow('')

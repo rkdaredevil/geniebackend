@@ -381,6 +381,51 @@ exports.findGender = (req, res, next) => {
 
 }
 
-// var initials = Array.prototype.map.call(user.name.split(" "), function(x) {
-//   return x.substring(0, 1).toUpperCase();
-// }).join('');
+
+exports.revealYourself = async (req, res, next) => {
+
+  try {
+    const {
+      id
+    } = req.params;
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({
+        err: 'could not find user'
+      });
+    }
+    if (user) {
+
+      let ids = req.body;
+
+      if (ids === null || ids === undefined || ids === '') {
+        return res.status(203).json({
+          err: 'No id available to reveal profile'
+        })
+      } else {
+        const revealToUsers = await User.find({
+          'userID': {
+            $in: ids
+          }
+        });
+        if (revealToUsers != '') {
+          return res.status(200).json({
+            message: `Data is revealed for users ${ids}`,
+            users: user
+          });
+
+        } else {
+          return res.status(203).json({
+            message: `No Content is available for ${ids}`
+          })
+        }
+      }
+
+    }
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send(err);
+  }
+
+}

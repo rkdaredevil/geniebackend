@@ -143,6 +143,10 @@ router
   .get(authorize(), controller.getOne);
 
 router
+  .route('/reveal/:id')
+  .post(controller.revealYourself);  
+
+router
   .route('/:userId')
   /**
    * @api {get} v1/users/:id Get User

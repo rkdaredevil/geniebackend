@@ -44,7 +44,7 @@ module.exports = {
       password: Joi.string().min(6).max(128),
       name: Joi.string().max(128),
       role: Joi.string().valid(User.roles),
-      phone: Joi.number().integer().min(100000000000).max(999999999999),
+      phone: Joi.number().integer().required(),
       gender: Joi.string().valid(['Male', 'Female', 'Other']).required(),
       authType: Joi.string().valid(['facebook', 'phone']).required(),
       profileImage: Joi.string().allow(''),
