@@ -32,7 +32,9 @@
     "docker:start": "cross-env NODE_ENV=production pm2-docker start ./src/index.js",
     "docker:prod": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml up",
     "docker:dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up",
-    "docker:test": "docker-compose -f docker-compose.yml -f docker-compose.test.yml up --abort-on-container-exit"
+    "docker:test": "docker-compose -f docker-compose.yml -f docker-compose.test.yml up --abort-on-container-exit",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -97,7 +99,8 @@
     "pm2": "^3.0.0",
     "shuffle-array": "^1.0.1",
     "uuid": "^3.3.2",
-    "winston": "^3.1.0"
+    "winston": "^3.1.0",
+    "snyk": "^1.161.1"
   },
   "devDependencies": {
     "apidoc": "^0.17.5",
@@ -119,5 +122,6 @@
   "bugs": {
     "url": "https://github.com/rkdaredevil/geniebackend.git/issues"
   },
-  "homepage": "https://github.com/rkdaredevil/geniebackend.git#readme"
+  "homepage": "https://github.com/rkdaredevil/geniebackend.git#readme",
+  "snyk": true
 }
